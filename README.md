@@ -1,24 +1,84 @@
 # rv32i RISC-V ALU
 
-## What it does
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-Full 32-bit RISC-V rv32i ALU implementing ADD, SUB,
-AND, OR, XOR, SLL, SRL, SRA, SLT, SLTU operations.
-Part of rv32imsu SoC designed in Synopsys ICC2 on
-sky130A at UCF EEE-5390C.
+## Overview
 
-## How it works
+Full 32-bit RISC-V rv32i ALU implementing all integer
+arithmetic and logic operations. This is the arithmetic
+core extracted from a complete rv32imsu RISC-V SoC
+designed in Synopsys DC Shell and Synopsys ICC2 on the
+SkyWater sky130A 130nm PDK for EEE-5390C Full Custom
+VLSI Design at University of Central Florida (UCF).
 
-32-bit operands loaded one byte at a time via uio pins.
-ALU operation selected by ui_in[5:2]. Result read back
-one byte at a time using out_sel on uio[7:6].
+## Supported Operations
+
+| op[3:0] | Hex | Operation              | Example          |
+|---------|-----|------------------------|------------------|
+| 0001    | 0x1 | SLL — shift left       | 1 << 3 = 8       |
+| 0010    | 0x2 | SRL — shift right      | 8 >> 3 = 1       |
+| 0011    | 0x3 | SRA — arithmetic shift | -8 >> 1 = -4     |
+| 0100    | 0x4 | ADD — addition         | 5 + 3 = 8        |
+| 0110    | 0x6 | SUB — subtraction      | 10 - 3 = 7       |
+| 0111    | 0x7 | AND — bitwise and      | 0xF & 0x5 = 0x5  |
+| 1000    | 0x8 | OR  — bitwise or       | 0xA or 0x5 = 0xF |
+| 1001    | 0x9 | XOR — bitwise xor      | 0xF ^ 0xF = 0    |
+| 1010    | 0xA | SLT — less than        | 3 < 5 = 1        |
+| 1011    | 0xB | SLTS — less than signed| -1 < 1 = 1       |
+
+## Pin Assignment
+
+| Pin | Direction | Function |
+|-----|-----------|----------|
+| ui_in[7:4] | Input | Operand A (4-bit) |
+| ui_in[3:0] | Input | Operand B (4-bit) |
+| uio_in[3:0] | Input | ALU operation select |
+| uo_out[7:0] | Output | Result (8-bit) |
 
 ## How to test
 
-Load A: ui_in[7:6]=byte_sel, ui_in[5:2]=op, uio=data, clock
-Load B: ui_in[1:0]=byte_sel, uio=data, clock
-Read:   uio[7:6]=result_byte_sel, read uo_out
+Set ui_in[7:4] to operand A (values 0-15).
+Set ui_in[3:0] to operand B (values 0-15).
+Set uio_in[3:0] to the ALU operation.
+Read result from uo_out[7:0].
+
+Example — ADD 5 + 3:
+  ui_in   = 8'b0101_0011  (A=5, B=3)
+  uio_in  = 8'b0000_0100  (op=ADD=0x4)
+  uo_out  = 8'b0000_1000  (result=8)
+
+Example — AND 0xF & 0x5:
+  ui_in   = 8'b1111_0101  (A=15, B=5)
+  uio_in  = 8'b0000_0111  (op=AND=0x7)
+  uo_out  = 8'b0000_0101  (result=5)
+
+## Design Context
+
+This ALU is a component of a complete rv32imsu
+RISC-V SoC featuring:
+- 32-bit RISC-V pipeline (RV32IMSU ISA)
+- 10 SRAM macros (6x 2kB + 4x 1kB)
+- AXI4 interconnect
+- Instruction cache
+- GPIO, UART, SPI, Timer peripherals
+- Implemented in Synopsys ICC2 on sky130A
+- 29,470 leaf cells, 60ns clock period
+
+The full SoC is too large for TinyTapeout tiles.
+This tile demonstrates the core computational unit.
+
+## Reuse
+
+This ALU can be reused in any RISC-V implementation.
+The riscv_alu.v file is self-contained and requires
+only riscv_defs.v for the opcode definitions.
+Both files are directly usable in other designs.
 
 ## External hardware
 
 None required.
+
+## Author
+
+UCF EEE-5390C Full Custom VLSI Design
+University of Central Florida
