@@ -1,42 +1,46 @@
-![](../../workflows/gds/badge.svg) ![](../../workflows/docs/badge.svg) ![](../../workflows/test/badge.svg) ![](../../workflows/fpga/badge.svg)
+# rv32i RISC-V ALU
 
-# Tiny Tapeout Verilog Project Template
+## What it does
 
-- [Read the documentation for project](docs/info.md)
+Full 32-bit RISC-V rv32i ALU supporting all integer
+arithmetic and logic operations. This is a component
+of a complete rv32imsu RISC-V SoC implemented in
+Synopsys DC Shell and ICC2 on sky130A 130nm PDK for
+EEE-5390C Full Custom VLSI Design at UCF.
 
-## What is Tiny Tapeout?
+## Operations
 
-Tiny Tapeout is an educational project that aims to make it easier and cheaper than ever to get your digital and analog designs manufactured on a real chip.
+| op[3:0] | Hex  | Operation        |
+|---------|------|------------------|
+| 0001    | 0x1  | SLL shift left   |
+| 0010    | 0x2  | SRL shift right  |
+| 0011    | 0x3  | SRA arith shift  |
+| 0100    | 0x4  | ADD              |
+| 0101    | 0x5  | SUB              |
+| 0110    | 0x6  | AND              |
+| 0111    | 0x7  | OR               |
+| 1000    | 0x8  | XOR              |
+| 1001    | 0x9  | SLT unsigned     |
+| 1010    | 0xA  | SLT signed       |
 
-To learn more and get started, visit https://tinytapeout.com.
+## How to test
 
-## Set up your Verilog project
+Load operand A — set ui_in[7:6] to byte index
+(00=byte0, 01=byte1, 10=byte2, 11=byte3),
+set ui_in[5:2] to ALU op when loading byte 0,
+set uio[7:0] to the data byte, pulse clock.
 
-1. Add your Verilog files to the `src` folder.
-2. Edit the [info.yaml](info.yaml) and update information about your project, paying special attention to the `source_files` and `top_module` properties. If you are upgrading an existing Tiny Tapeout project, check out our [online info.yaml migration tool](https://tinytapeout.github.io/tt-yaml-upgrade-tool/).
-3. Edit [docs/info.md](docs/info.md) and add a description of your project.
-4. Adapt the testbench to your design. See [test/README.md](test/README.md) for more information.
+Load operand B — set ui_in[1:0] to byte index,
+set uio[7:0] to data byte, pulse clock.
 
-The GitHub action will automatically build the ASIC files using [LibreLane](https://www.zerotoasiccourse.com/terminology/librelane/).
+Read result — set uio[7:6] to result byte index,
+read uo_out[7:0] on next clock.
 
-## Enable GitHub actions to build the results page
+Example ADD 5 + 3:
+  Load A byte0: ui_in=8'b00_0100_00, uio=8'h05
+  Load B byte0: ui_in=8'bxx_xxxx_00, uio=8'h03
+  Read result:  uio[7:6]=00, uo_out=8'h08
 
-- [Enabling GitHub Pages](https://tinytapeout.com/faq/#my-github-action-is-failing-on-the-pages-part)
+## External hardware
 
-## Resources
-
-- [FAQ](https://tinytapeout.com/faq/)
-- [Digital design lessons](https://tinytapeout.com/digital_design/)
-- [Learn how semiconductors work](https://tinytapeout.com/siliwiz/)
-- [Join the community](https://tinytapeout.com/discord)
-- [Build your design locally](https://www.tinytapeout.com/guides/local-hardening/)
-
-## What next?
-
-- [Submit your design to the next shuttle](https://app.tinytapeout.com/).
-- Edit [this README](README.md) and explain your design, how it works, and how to test it.
-- Share your project on your social network of choice:
-  - LinkedIn [#tinytapeout](https://www.linkedin.com/search/results/content/?keywords=%23tinytapeout) [@TinyTapeout](https://www.linkedin.com/company/100708654/)
-  - Mastodon [#tinytapeout](https://chaos.social/tags/tinytapeout) [@matthewvenn](https://chaos.social/@matthewvenn)
-  - X (formerly Twitter) [#tinytapeout](https://twitter.com/hashtag/tinytapeout) [@tinytapeout](https://twitter.com/tinytapeout)
-  - Bluesky [@tinytapeout.com](https://bsky.app/profile/tinytapeout.com)
+None required.
