@@ -1,3 +1,9 @@
+[![GDS](../../actions/workflows/gds.yaml/badge.svg)](../../actions/workflows/gds.yaml)
+[![Docs](../../actions/workflows/docs.yaml/badge.svg)](../../actions/workflows/docs.yaml)
+[![Test](../../actions/workflows/test.yaml/badge.svg)](../../actions/workflows/test.yaml)
+[![FPGA](../../actions/workflows/fpga.yaml/badge.svg)](../../actions/workflows/fpga.yaml)
+
+# rv32i RISC-V ALU
 # rv32i RISC-V ALU
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
@@ -52,20 +58,6 @@ Example — AND 0xF & 0x5:
   uio_in  = 8'b0000_0111  (op=AND=0x7)
   uo_out  = 8'b0000_0101  (result=5)
 
-## Design Context
-
-This ALU is a component of a complete rv32imsu
-RISC-V SoC featuring:
-- 32-bit RISC-V pipeline (RV32IMSU ISA)
-- 10 SRAM macros (6x 2kB + 4x 1kB)
-- AXI4 interconnect
-- Instruction cache
-- GPIO, UART, SPI, Timer peripherals
-- Implemented in Synopsys ICC2 on sky130A
-- 29,470 leaf cells, 60ns clock period
-
-The full SoC is too large for TinyTapeout tiles.
-This tile demonstrates the core computational unit.
 
 ## Reuse
 
@@ -78,7 +70,3 @@ Both files are directly usable in other designs.
 
 None required.
 
-## Author
-
-UCF EEE-5390C Full Custom VLSI Design
-University of Central Florida
